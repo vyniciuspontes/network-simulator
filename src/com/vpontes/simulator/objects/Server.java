@@ -26,7 +26,7 @@ public class Server {
     }
 
     public void startServer() throws IOException, InterruptedException {
-        this.serverThread = new Thread(new MessageProcessor(this.door));
+        this.serverThread = new Thread(new MessageReceiver(this.door));
         this.serverThread.start();
         Thread.sleep(500);
         System.out.println("Server " + this.name + " executando na porta " 

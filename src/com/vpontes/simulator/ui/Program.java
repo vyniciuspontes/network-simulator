@@ -6,6 +6,7 @@
  */
 package com.vpontes.simulator.ui;
 
+import com.vpontes.simulator.objects.IPV4Datagram;
 import com.vpontes.simulator.objects.Simulator;
 import java.io.IOException;
 import java.util.Scanner;
@@ -34,6 +35,9 @@ public class Program {
 
         try {
             this.initializeServerMenu();
+            this.simulator.startConnection("127.0.0.1", 8050);
+            this.simulator.sendMessage("Vynicius Morais Pontes ama muito Aline Ribeiro Torres");
+            this.simulator.sendMessage("Quer casar cmg ?");
             Integer menuOption = this.readMenuOptions();
             
             switch (menuOption){
