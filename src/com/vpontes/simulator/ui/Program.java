@@ -35,7 +35,7 @@ public class Program {
 
         try {
             this.initializeServerMenu();
-            this.simulator.startConnection("127.0.0.1", 8050);
+            this.simulator.startConnection("10.0.0.1");
             this.simulator.sendMessage("Vynicius Morais Pontes ama muito Aline Ribeiro Torres");
             this.simulator.sendMessage("Quer casar cmg ?");
             Integer menuOption = this.readMenuOptions();
@@ -50,14 +50,14 @@ public class Program {
         }
     }
 
-    private void initializeServerMenu() throws IOException, InterruptedException{
-        /*System.out.println("Digite o nome do server");
+    private void initializeServerMenu() throws IOException, InterruptedException {
+        System.out.println("Digite o nome do server");
         String name = this.scanner.next();
         System.out.println("Digite o número de porta do server");
         Integer door = this.scanner.nextInt();
-        this.simulator.createServer(door, name);*/
-        
-        this.simulator.createServer(8050, "A");
+        this.simulator.createServer(door, name);
+
+        //this.simulator.createServer(8050, "A");
     }
     
     private Integer readMenuOptions() {

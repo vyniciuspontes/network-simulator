@@ -4,13 +4,13 @@
 * Redes I - Universidade Federal Fluminense
 *
  */
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.client;
 
+import com.vpontes.simulator.objects.IPV4Datagram;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +22,13 @@ import java.util.List;
  */
 public class MessageDispatcher {
 
-    private final int MAX_DATAGRAM_SIZE = 350;//65535;
+    private final int MAX_DATAGRAM_SIZE = 500;//65535;
     
     private Socket socket;
     private ObjectOutputStream outputStream;
+    
 
-    public MessageDispatcher() {
-    }
+    public MessageDispatcher() {}
     
     public void startConnection(String address, Integer door) throws IOException {
         
@@ -36,9 +36,9 @@ public class MessageDispatcher {
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    public void sendMessage(String message) throws IOException {
+    public void sendMessage(IPV4Datagram datagram) throws IOException {
         
-        IPV4Datagram datagram = new IPV4Datagram(message.getBytes());
+        //IPV4Datagram datagram = new IPV4Datagram(message.getBytes());
         
         int datagramSize = getBytes(datagram).length;
         
@@ -76,7 +76,7 @@ public class MessageDispatcher {
         for (int i = 0; i < datagramNumber; i++) {
             endOfArray = (i * contentLimit) + contentLimit;
             byte[] array = Arrays.copyOfRange(datagram.getContent(), i * contentLimit, contentSize < endOfArray ? contentSize : endOfArray);
-            datagrams.add(new IPV4Datagram(array));
+            datagrams.add(new IPV4Datagram(datagram.getSourceIPAddress(), datagram.getDestinationIPAddress(), array));
         }
         
         return datagrams;

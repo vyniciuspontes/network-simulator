@@ -4,10 +4,12 @@
 * Redes I - Universidade Federal Fluminense
 *
  */
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.server;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import com.vpontes.simulator.objects.IPV4Datagram;
+import com.vpontes.simulator.objects.Node;
+import com.vpontes.simulator.objects.NodesCatalog;
+import com.vpontes.simulator.objects.Router;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -31,26 +33,32 @@ public class MessageReceiver implements Runnable {
 
     private void proccessConnection(Socket connectionSocket) throws IOException, ClassNotFoundException {
 
+        /*
         ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
-        InputStream is = connectionSocket.getInputStream();
-
-        /*byte[] data = new byte[1024];
+        byte[] data = new byte[1024];
 
         while (is.read(data) != -1) {
             byteArrayOutput.write(data);
         }
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutput.toByteArray());*/
-        ObjectInput dataInputObject = new ObjectInputStream(is);
+        
 
         //IPV4Datagram message1 = (IPV4Datagram) dataInputObject.readObject();
         //System.out.println(new String(message1.getContent()));
-
-        IPV4Datagram datagram = null;
+        
+        InputStream is = connectionSocket.getInputStream();
+        ObjectInput dataInputObject = new ObjectInputStream(is);        
+        IPV4Datagram datagram;
         
         while ((datagram = (IPV4Datagram) dataInputObject.readObject()) != null) {
-            System.out.println(new String(datagram.getContent()));
+            System.out.print(datagram.toString() + "\n");
+            Node node = NodesCatalog.getInstace().getNode(datagram.getDestinationIPAddress());
+            if(node == null){
+                Router.getInstance().route(datagram);
+            }
         }
-
+        
+        
     }
 
     @Override
@@ -61,7 +69,7 @@ public class MessageReceiver implements Runnable {
                 this.proccessConnection(connectionSocket);
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE,
-                        "Can't start thread", ex);
+                        "", ex);
             }
         }
     }

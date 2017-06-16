@@ -30,8 +30,10 @@ public class IPV4Datagram implements Serializable {
 
     private byte[] content;
 
-    public IPV4Datagram(byte[] content) {
+    public IPV4Datagram(String sourceIPAddress, String destinationIPAddress, byte[] content) {
         this.content = content;
+        this.sourceIPAddress = sourceIPAddress;
+        this.destinationIPAddress = destinationIPAddress;
     }
 
     public byte[] getContent() {
@@ -69,4 +71,11 @@ public class IPV4Datagram implements Serializable {
     public void setDestinationIPAddress(String destinationIPAddress) {
         this.destinationIPAddress = destinationIPAddress;
     }
+
+    @Override
+    public String toString() {
+        return "IPV4Datagram {" + "sourceIPAddress=" + sourceIPAddress + ", destinationIPAddress=" + destinationIPAddress + ", ttl=" + ttl + ", content=" + new String(content) + '}';
+    }
+    
+    
 }

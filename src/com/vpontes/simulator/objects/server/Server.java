@@ -1,4 +1,4 @@
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.server;
 
 import java.io.IOException;
 
