@@ -7,9 +7,9 @@
 package com.vpontes.simulator.objects.server;
 
 import com.vpontes.simulator.objects.IPV4Datagram;
-import com.vpontes.simulator.objects.Node;
-import com.vpontes.simulator.objects.NodesCatalog;
-import com.vpontes.simulator.objects.Router;
+import com.vpontes.simulator.objects.nodes.Node;
+import com.vpontes.simulator.objects.nodes.NodesCatalog;
+import com.vpontes.simulator.objects.router.Router;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;

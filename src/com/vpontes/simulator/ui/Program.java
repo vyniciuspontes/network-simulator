@@ -10,8 +10,6 @@ import com.vpontes.simulator.objects.Simulator;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -34,7 +32,7 @@ public class Program {
     public void run() {
 
         this.initializeServerMenu();
-        this.readMenuOptions();
+        this.readConnectionOptions();
     }
 
     private void initializeServerMenu() {
@@ -57,7 +55,7 @@ public class Program {
         //this.simulator.createServer(8050, "A");
     }
 
-    private void readMenuOptions() {
+    private void readConnectionOptions() {
         int stop = 0;
 
         
@@ -72,6 +70,8 @@ public class Program {
             }
         } while (stop != 1);
 
+        System.out.println("Digite uma mensagem !");
+        
         do {
             try {
                 String message = scanner.nextLine();

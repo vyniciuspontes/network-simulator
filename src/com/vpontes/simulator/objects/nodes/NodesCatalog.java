@@ -4,7 +4,7 @@
 * Redes I - Universidade Federal Fluminense
 *
  */
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.nodes;
 
 import com.vpontes.simulator.objects.client.Client;
 import com.vpontes.simulator.utils.IPV4Util;
@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe responsável por fazer encapsular e recuperar as interfaces do projeto
  * @author Vynicius
  */
 public class NodesCatalog {

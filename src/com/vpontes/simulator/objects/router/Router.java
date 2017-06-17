@@ -4,8 +4,11 @@
 * Redes I - Universidade Federal Fluminense
 *
  */
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.router;
 
+import com.vpontes.simulator.objects.IPV4Datagram;
+import com.vpontes.simulator.objects.nodes.NodesCatalog;
+import com.vpontes.simulator.objects.nodes.Node;
 import com.vpontes.simulator.objects.client.Client;
 import com.vpontes.simulator.objects.client.MessageDispatcher;
 import com.vpontes.simulator.utils.IPV4Util;
@@ -19,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe recupera e encapsula as regras de roteamento do projeto. Além de fazer o próprio roteamento dado um datagrama.
  * @author Vynicius
  */
 public class Router {
@@ -92,7 +95,7 @@ public class Router {
         if (currentNode == null) {
             throw new IllegalArgumentException("Endereço não encontrado na tabela de roteamento");
         }
-        System.out.println("Encaminhando datagrama para endereco virtual: " + currentNode.getVirtualAddress());
+        System.out.println("Encaminhando datagrama pela interface: " + currentNode.getVirtualAddress());
         
         if(openConnections.isEmpty() || !isConnectionOpen(currentNode.getAddress(), currentNode.getDoor())){
             dispatcher.startConnection(currentNode.getAddress(), currentNode.getDoor());

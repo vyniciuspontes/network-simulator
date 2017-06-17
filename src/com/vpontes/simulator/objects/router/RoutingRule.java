@@ -4,10 +4,10 @@
 * Redes I - Universidade Federal Fluminense
 *
  */
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.router;
 
 /**
- *
+ * Classe representa um conjunto de regras de roteamento
  * @author Vynicius
  */
 public class RoutingRule {

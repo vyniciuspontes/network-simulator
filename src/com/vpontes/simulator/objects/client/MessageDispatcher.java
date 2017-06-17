@@ -37,9 +37,7 @@ public class MessageDispatcher {
     }
 
     public void sendMessage(IPV4Datagram datagram) throws IOException {
-        
-        //IPV4Datagram datagram = new IPV4Datagram(message.getBytes());
-        
+                
         int datagramSize = getBytes(datagram).length;
         
         if(datagramSize > MAX_DATAGRAM_SIZE){

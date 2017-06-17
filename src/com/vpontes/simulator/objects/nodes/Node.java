@@ -1,7 +1,7 @@
-package com.vpontes.simulator.objects;
+package com.vpontes.simulator.objects.nodes;
 
 /**
- *
+ * Classe responsável por representar interfaces virtuais
  * @author Vynicius
  */
 public class Node {

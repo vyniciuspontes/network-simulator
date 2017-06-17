@@ -5,7 +5,7 @@
 *
  */
 
-import com.vpontes.simulator.objects.Router;
+import com.vpontes.simulator.objects.router.Router;
 import com.vpontes.simulator.utils.IPV4Util;
 import java.net.UnknownHostException;
 import org.junit.After;
@@ -48,10 +48,6 @@ public class NewEmptyJUnitTest {
         
         IPV4Util virtualAddress = new IPV4Util("10.0.5.0", "255.255.255.0");
         //IPV4Utils virtualAddress = new IPV4Utils("192.168.100.2/24");
-        System.out.println("CIDR = " + virtualAddress.getCIDR());
-        System.out.println("Bynary = " + virtualAddress.getNetmaskInBinary());
-         System.out.println("Hosts = " + virtualAddress.getNumberOfHosts());
-        System.out.println("IP = " + virtualAddress.getIP());
         System.out.println("Network Address = " + virtualAddress.getNetworkAddress());
         //assertEquals(virtualAddress.getNetworkAddress(), "200.20.10.64");
     }

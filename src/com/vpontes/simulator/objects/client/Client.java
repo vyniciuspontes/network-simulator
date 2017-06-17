@@ -7,8 +7,8 @@
 package com.vpontes.simulator.objects.client;
 
 import com.vpontes.simulator.objects.IPV4Datagram;
-import com.vpontes.simulator.objects.Node;
-import com.vpontes.simulator.objects.Router;
+import com.vpontes.simulator.objects.nodes.Node;
+import com.vpontes.simulator.objects.router.Router;
 import com.vpontes.simulator.utils.IPV4Util;
 import java.io.IOException;
 
@@ -29,7 +29,6 @@ public class Client {
 
     public void startConnection(String virtualAddress) throws IOException, IllegalArgumentException {
 
-        //this.destinatioNode = NodesCatalog.getInstace().getNode(virtualAddress);
         if (!IPV4Util.verifyIp(virtualAddress)) {
             throw new IllegalArgumentException("IP invalido");
         }
@@ -37,10 +36,6 @@ public class Client {
         this.router = Router.getInstance();
         this.originNode = router.getOriginNode(virtualAddress);
 
-        //if (this.destinatioNode == null) {
-        //  throw new NumberFormatException("Impossivel iniciar conexão: node vizinho não encontrado (" + virtualAddress + ")");
-        //}
-        
         System.out.println("Iniciando conexão pela interface: " + originNode.getVirtualAddress());
 
         dipatcher.startConnection(this.originNode.getAddress(), this.originNode.getDoor());
