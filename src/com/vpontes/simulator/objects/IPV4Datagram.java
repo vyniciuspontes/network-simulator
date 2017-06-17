@@ -48,8 +48,8 @@ public class IPV4Datagram implements Serializable {
         return ttl;
     }
 
-    public void setTtl(int ttl) {
-        this.ttl = ttl;
+    public void decreaseTTL(int decrease) {
+        this.ttl -= decrease;
     }
 
     public int getLenght() {

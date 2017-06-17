@@ -57,10 +57,15 @@ public class NewEmptyJUnitTest {
     }
     
     @Test
+    public void testIP(){
+        assertEquals(true,IPV4Util.verifyIp("123.201.020.120"));
+    }
+    
+    //@Test
     public void testRouter(){
         Router router = Router.getInstance();
         
-        System.out.println(router.getOriginNode("10.0.5.100"));
+        System.out.println(router.getOriginNode("10.0.5.1"));
     }
     
     

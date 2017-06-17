@@ -27,38 +27,38 @@ public class MessageReceiver implements Runnable {
 
     private final ServerSocket welcomeSocket;
 
-    public MessageReceiver(Integer door) throws IOException {
+    public MessageReceiver(Integer door) throws IOException, IllegalArgumentException {
         this.welcomeSocket = new ServerSocket(door);
     }
 
-    private void proccessConnection(Socket connectionSocket) throws IOException, ClassNotFoundException {
+    private void proccessConnection(Socket connectionSocket) {
 
-        /*
-        ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-
-        while (is.read(data) != -1) {
+        
+        InputStream is = null;
+        try {
+            /*
+            ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
+            byte[] data = new byte[1024];
+            while (is.read(data) != -1) {
             byteArrayOutput.write(data);
-        }
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutput.toByteArray());*/
-        
-
-        //IPV4Datagram message1 = (IPV4Datagram) dataInputObject.readObject();
-        //System.out.println(new String(message1.getContent()));
-        
-        InputStream is = connectionSocket.getInputStream();
-        ObjectInput dataInputObject = new ObjectInputStream(is);        
-        IPV4Datagram datagram;
-        
-        while ((datagram = (IPV4Datagram) dataInputObject.readObject()) != null) {
-            System.out.print(datagram.toString() + "\n");
-            Node node = NodesCatalog.getInstace().getNode(datagram.getDestinationIPAddress());
-            if(node == null){
-                Router.getInstance().route(datagram);
             }
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutput.toByteArray());*/
+            //IPV4Datagram message1 = (IPV4Datagram) dataInputObject.readObject();
+            //System.out.println(new String(message1.getContent()));
+            is = connectionSocket.getInputStream();
+            ObjectInput dataInputObject = new ObjectInputStream(is);
+            IPV4Datagram datagram;
+            while ((datagram = (IPV4Datagram) dataInputObject.readObject()) != null) {
+                System.out.print(datagram.toString() + "\n");
+                Node node = NodesCatalog.getInstace().getNode(datagram.getDestinationIPAddress());
+                if(node == null){
+                    System.out.println();
+                    Router.getInstance().route(datagram);
+                }
+            }
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException ex) {
+            System.out.println("Erro ao tentar rotear datagrama: " + ex.toString());
         }
-        
-        
     }
 
     @Override
@@ -67,9 +67,8 @@ public class MessageReceiver implements Runnable {
             try {
                 Socket connectionSocket = this.welcomeSocket.accept();
                 this.proccessConnection(connectionSocket);
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE,
-                        "", ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

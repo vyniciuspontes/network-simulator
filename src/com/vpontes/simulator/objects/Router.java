@@ -27,23 +27,25 @@ public class Router {
     private List<RoutingRule> routingRules;
     private final String ROUTING_RULES_FILE_LOCATION = "routing-rules.txt";
     private MessageDispatcher dispatcher;
-    
-    
+    private List<Node> openConnections;
+
     private Router() {
-        
+
         this.readRoutingRulesFile();
         this.dispatcher = new MessageDispatcher();
+        openConnections = new ArrayList<>();
     }
-    
+
     private static Router instance;
-    
-    static public Router getInstance(){
-        if(instance == null)
+
+    static public Router getInstance() {
+        if (instance == null) {
             instance = new Router();
+        }
         return instance;
     }
 
-    public Node getOriginNode(String destinationAddress) {
+    public Node getOriginNode(String destinationAddress) throws IllegalArgumentException {
 
         Node currentNode = null;
 
@@ -55,39 +57,54 @@ public class Router {
                 if (util.contains(destinationAddress)) {
                     return NodesCatalog.getInstace().getNode(routingRule.getIndex());
                 }
-            }else{
+            } else {
                 currentNode = NodesCatalog.getInstace().getNode(routingRule.getIndex());
             }
+        }
+        
+        if (currentNode == null) {
+            throw new IllegalArgumentException("Interface de origem não encontrada com os valores da tabela de roteamento");
         }
 
         return currentNode;
     }
 
-    public void route(IPV4Datagram datagram) {
-        
-        try {
-            Node currentNode = null;
-            
-            for (RoutingRule routingRule : routingRules) {
-                if (!routingRule.getSubnetAddress().equals("0.0.0.0") && !routingRule.getSubnetMask().equals("0.0.0.0")) {
-                    IPV4Util util = new IPV4Util(routingRule.getSubnetAddress(), routingRule.getSubnetMask());
-                    
-                    if (util.contains(datagram.getDestinationIPAddress())) {
-                        currentNode = NodesCatalog.getInstace().getNode(routingRule.getIndex());
-                        break;
-                    }
-                }else{
-                    currentNode = NodesCatalog.getInstace().getNode(routingRule.getIndex());
-                }
-            }
-            
-            if(currentNode == null)
-                throw new IllegalArgumentException("Endereço não encontrado na tabela de roteamento");
-            
-            dispatcher.startConnection(currentNode.getAddress(),currentNode.getDoor());
-        } catch (IOException ex) {
-            Logger.getLogger(Router.class.getName()).log(Level.SEVERE, "Não foi possível rotear o datagrama para o endereço: " + datagram.getDestinationIPAddress(), ex);
+    public void route(IPV4Datagram datagram) throws IOException, IllegalArgumentException{
+
+        if(datagram.getTtl() == 0){
+            throw new IllegalArgumentException("TTL igual a 0");
         }
+        Node currentNode = null;
+
+        for (RoutingRule routingRule : routingRules) {
+            if (!routingRule.getSubnetAddress().equals("0.0.0.0") && !routingRule.getSubnetMask().equals("0.0.0.0")) {
+                IPV4Util util = new IPV4Util(routingRule.getSubnetAddress(), routingRule.getSubnetMask());
+
+                if (util.contains(datagram.getDestinationIPAddress())) {
+                    currentNode = NodesCatalog.getInstace().getNode(routingRule.getIndex());
+                    break;
+                }
+            } else {
+                currentNode = NodesCatalog.getInstace().getNode(routingRule.getIndex());
+            }
+        }
+
+        if (currentNode == null) {
+            throw new IllegalArgumentException("Endereço não encontrado na tabela de roteamento");
+        }
+        System.out.println("Encaminhando datagrama para endereco virtual: " + currentNode.getVirtualAddress());
+        
+        if(openConnections.isEmpty() || !isConnectionOpen(currentNode.getAddress(), currentNode.getDoor())){
+            dispatcher.startConnection(currentNode.getAddress(), currentNode.getDoor());
+            openConnections.add(currentNode);
+        }
+        datagram.decreaseTTL(1);
+        dispatcher.sendMessage(datagram);
+    }
+    
+    private boolean isConnectionOpen(String address, Integer door){
+        
+        return openConnections.stream().anyMatch(c -> c.getAddress().equals(address) && c.getDoor().equals(door));
     }
 
     private void readRoutingRulesFile() {

@@ -96,6 +96,30 @@ public class IPV4Util {
         }
     }
     
+    static public boolean verifyIp(String ip){
+        /* IP */
+        String[] st = ip.split("\\.");
+
+        if (st.length != 4) {
+            return false;
+        }
+
+        int i = 24;
+        int calIp = 0;
+
+        for (String st1 : st) {
+            int value = Integer.parseInt(st1);
+            if (value != (value & 0xff)) {
+
+                return false;
+            }
+            calIp += value << i;
+            i -= 8;
+        }
+        
+        return true;
+    }
+    
     static public boolean verifyNetmask(String netmask) {
         /* Netmask */
         String[] st = netmask.split("\\.");

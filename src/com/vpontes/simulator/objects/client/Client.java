@@ -8,11 +8,9 @@ package com.vpontes.simulator.objects.client;
 
 import com.vpontes.simulator.objects.IPV4Datagram;
 import com.vpontes.simulator.objects.Node;
-import com.vpontes.simulator.objects.NodesCatalog;
 import com.vpontes.simulator.objects.Router;
+import com.vpontes.simulator.utils.IPV4Util;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,34 +21,35 @@ public class Client {
     private MessageDispatcher dipatcher;
     private Router router;
     private Node originNode;
-    private Node destinatioNode;
+    private String destinationAddress;
 
     public Client() throws IOException {
         dipatcher = new MessageDispatcher();
     }
 
-    public void startConnection(String virtualAddress) {
+    public void startConnection(String virtualAddress) throws IOException, IllegalArgumentException {
 
-        try {
-            this.destinatioNode = NodesCatalog.getInstace().getNode(virtualAddress);
-            this.router = Router.getInstance();
-            this.originNode = router.getOriginNode(virtualAddress);
-            if (this.destinatioNode == null) {
-                throw new RuntimeException("Impossivel iniciar conexão: node vizinho não encontrado (" + virtualAddress + ")");
-            }
-            
-            System.out.println("Iniciando conexão com: " + virtualAddress + " pela interface: " + originNode.getVirtualAddress());
-            
-            dipatcher.startConnection(this.destinatioNode.getAddress(), this.destinatioNode.getDoor());
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Não foi possível estabelecer conexão com o endereço virtual: " + destinatioNode.getSubnetAddress(), ex);
+        //this.destinatioNode = NodesCatalog.getInstace().getNode(virtualAddress);
+        if (!IPV4Util.verifyIp(virtualAddress)) {
+            throw new IllegalArgumentException("IP invalido");
         }
+        destinationAddress = virtualAddress;
+        this.router = Router.getInstance();
+        this.originNode = router.getOriginNode(virtualAddress);
+
+        //if (this.destinatioNode == null) {
+        //  throw new NumberFormatException("Impossivel iniciar conexão: node vizinho não encontrado (" + virtualAddress + ")");
+        //}
+        
+        System.out.println("Iniciando conexão pela interface: " + originNode.getVirtualAddress());
+
+        dipatcher.startConnection(this.originNode.getAddress(), this.originNode.getDoor());
     }
 
     public void sendMessage(String message) throws IOException {
-        
-        IPV4Datagram datagram = new IPV4Datagram(this.originNode.getAddress(), this.destinatioNode.getVirtualAddress(), message.getBytes());
-        
+
+        IPV4Datagram datagram = new IPV4Datagram(this.originNode.getAddress(), destinationAddress, message.getBytes());
+
         dipatcher.sendMessage(datagram);
     }
 

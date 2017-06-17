@@ -16,7 +16,7 @@ public class Simulator {
     public Simulator() {
     }
 
-    public void startConnection(String virtualAddress) throws IOException {
+    public void startConnection(String virtualAddress) throws IOException, IllegalArgumentException {
         client = new Client();
         client.startConnection(virtualAddress);
     }
