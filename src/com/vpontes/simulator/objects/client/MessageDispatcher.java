@@ -35,11 +35,17 @@ public class MessageDispatcher {
         this.socket = new Socket(address, door);
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
     }
+    
+    public void close() throws IOException{
+        if(socket != null)
+            socket.close();
+    }
 
     public void sendMessage(IPV4Datagram datagram) throws IOException {
                 
         int datagramSize = getBytes(datagram).length;
-        
+        outputStream.reset();
+        System.out.println(socket.getPort());
         if(datagramSize > MAX_DATAGRAM_SIZE){
             List<IPV4Datagram> fragments = slice(datagram, datagramSize);
             for (IPV4Datagram fragment : fragments) {

@@ -11,13 +11,13 @@ import java.io.IOException;
 public class Simulator {
 
     private Server server;
-    private Client client;
+    private final Client client;
 
-    public Simulator() {
+    public Simulator() throws IOException {
+        client = new Client();
     }
 
     public void startConnection(String virtualAddress) throws IOException, IllegalArgumentException {
-        client = new Client();
         client.startConnection(virtualAddress);
     }
 

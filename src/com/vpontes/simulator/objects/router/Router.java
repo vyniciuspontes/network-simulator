@@ -16,27 +16,29 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Classe recupera e encapsula as regras de roteamento do projeto. Além de fazer o próprio roteamento dado um datagrama.
+ * Classe recupera e encapsula as regras de roteamento do projeto. Além de fazer
+ * o próprio roteamento dado um datagrama.
+ *
  * @author Vynicius
  */
 public class Router {
 
     private List<RoutingRule> routingRules;
     private final String ROUTING_RULES_FILE_LOCATION = "routing-rules.txt";
-    private MessageDispatcher dispatcher;
-    private List<Node> openConnections;
+    private Map<String, MessageDispatcher> dispatchers;
 
     private Router() {
 
         this.readRoutingRulesFile();
-        this.dispatcher = new MessageDispatcher();
-        openConnections = new ArrayList<>();
+        this.dispatchers = new HashMap<>();
     }
 
     private static Router instance;
@@ -64,7 +66,7 @@ public class Router {
                 currentNode = NodesCatalog.getInstace().getNode(routingRule.getIndex());
             }
         }
-        
+
         if (currentNode == null) {
             throw new IllegalArgumentException("Interface de origem não encontrada com os valores da tabela de roteamento");
         }
@@ -72,9 +74,9 @@ public class Router {
         return currentNode;
     }
 
-    public void route(IPV4Datagram datagram) throws IOException, IllegalArgumentException{
-
-        if(datagram.getTtl() == 0){
+    public void route(IPV4Datagram datagram) throws IOException, IllegalArgumentException {
+        
+        if (datagram.getTtl() == 0) {
             throw new IllegalArgumentException("TTL igual a 0");
         }
         Node currentNode = null;
@@ -96,18 +98,16 @@ public class Router {
             throw new IllegalArgumentException("Endereço não encontrado na tabela de roteamento");
         }
         System.out.println("Encaminhando datagrama pela interface: " + currentNode.getVirtualAddress());
-        
-        if(openConnections.isEmpty() || !isConnectionOpen(currentNode.getAddress(), currentNode.getDoor())){
+
+        MessageDispatcher dispatcher = dispatchers.get(currentNode.getAddress() + ":" + currentNode.getDoor());
+
+        if (dispatcher == null) {
+            dispatcher = new MessageDispatcher();
             dispatcher.startConnection(currentNode.getAddress(), currentNode.getDoor());
-            openConnections.add(currentNode);
+            dispatchers.put(currentNode.getAddress() + ":" + currentNode.getDoor(), dispatcher);
         }
         datagram.decreaseTTL(1);
         dispatcher.sendMessage(datagram);
-    }
-    
-    private boolean isConnectionOpen(String address, Integer door){
-        
-        return openConnections.stream().anyMatch(c -> c.getAddress().equals(address) && c.getDoor().equals(door));
     }
 
     private void readRoutingRulesFile() {

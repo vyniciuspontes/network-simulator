@@ -1,0 +1,1 @@
+java -jar network-simulator.jar

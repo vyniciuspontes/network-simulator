@@ -17,14 +17,14 @@ import java.util.Scanner;
  */
 public class Program {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new Program().run();
     }
 
     private Simulator simulator;
     private Scanner scanner;
 
-    public Program() {
+    public Program() throws IOException {
         this.simulator = new Simulator();
         this.scanner = new Scanner(System.in);
     }
@@ -57,7 +57,6 @@ public class Program {
 
     private void readConnectionOptions() {
         int stop = 0;
-
         
         do {
             try {
