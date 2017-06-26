@@ -7,6 +7,7 @@
 package com.vpontes.simulator.objects.client;
 
 import com.vpontes.simulator.objects.IPV4Datagram;
+import com.vpontes.simulator.objects.nodes.NodesCatalog;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -43,6 +44,9 @@ public class MessageDispatcher {
 
     public void sendMessage(IPV4Datagram datagram) throws IOException {
                 
+        if(NodesCatalog.getInstace().getNode(datagram.getDestinationIPAddress()) == null){
+            datagram.decreaseTTL(1);
+        }
         int datagramSize = getBytes(datagram).length;
         outputStream.reset();
         System.out.println(socket.getPort());

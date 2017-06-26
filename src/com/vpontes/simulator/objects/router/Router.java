@@ -106,7 +106,6 @@ public class Router {
             dispatcher.startConnection(currentNode.getAddress(), currentNode.getDoor());
             dispatchers.put(currentNode.getAddress() + ":" + currentNode.getDoor(), dispatcher);
         }
-        datagram.decreaseTTL(1);
         dispatcher.sendMessage(datagram);
     }
 
